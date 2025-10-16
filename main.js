@@ -126,3 +126,34 @@ registerEvent('btnStop', () => {
     gifContainer.classList.add('hidden');
   }, 2500);
 });
+registerEvent('btnRefuel', () => {
+  if (VehicleModule.isEngineOn()) {
+    eventBus.emit('update', '⛽ Please stop the engine before refueling!');
+    addNotification('Attempted to refuel while engine running!');
+    return;
+  }
+
+  const previousFuel = fuel;
+  fuel = Math.min(100, fuel + 30);  // Add 30% fuel, max 100
+  eventBus.emit('statsUpdate');
+
+  const added = fuel - previousFuel;
+  if (added > 0) {
+    const msg = `⛽ Refueled ${added}% — Tank at ${fuel}%`;
+    eventBus.emit('update', msg);
+    addNotification(msg);
+
+    // Optional refuel animation
+    actionGif.src = 'images/refuel.gif';
+    gifContainer.classList.remove('hidden');
+    gifContainer.classList.add('visible');
+    setTimeout(() => {
+      gifContainer.classList.remove('visible');
+      gifContainer.classList.add('hidden');
+    }, 2500);
+  } else {
+    const msg = 'Tank is already full!';
+    eventBus.emit('update', msg);
+    addNotification(msg);
+  }
+});
