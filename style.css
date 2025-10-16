@@ -245,3 +245,12 @@ footer {
   font-weight: bold;
 }
 .clear-btn:hover { background: #ff6600; }
+
+button.refuel {
+  background: linear-gradient(145deg, #00b300, #007a00);
+}
+button.refuel:hover {
+  background: linear-gradient(145deg, #00ff00, #00cc00);
+  color: #111;
+  transform: scale(1.05);
+}
