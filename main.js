@@ -171,4 +171,89 @@ registerEvent('btnRefuel', () => {
   }
 });
 
+// =====================
+// Robust Refuel Handler
+// =====================
+
+// helper to safely get element and warn
+function getEl(id) {
+  const el = document.getElementById(id);
+  if (!el) console.warn(`Element #${id} not found in DOM.`);
+  return el;
+}
+
+const btnRefuelEl = getEl('btnRefuel');
+
+// refuel settings
+const REFUEL_AMOUNT = 30;      // how much to add when hitting refuel (percent)
+const REFILL_STEP = 5;         // percent per tick
+const REFILL_INTERVAL = 300;   // ms per tick
+
+function playRefuelGif(duration = 2000) {
+  // if refuel.gif exists, play it for `duration` ms
+  try {
+    actionGif.src = 'images/refuel.gif';
+    gifContainer.classList.remove('hidden');
+    gifContainer.classList.add('visible');
+    setTimeout(() => {
+      // only hide if it wasn't changed by another action
+      gifContainer.classList.remove('visible');
+      gifContainer.classList.add('hidden');
+      // reset to default (optional)
+      // actionGif.src = 'images/start.gif';
+    }, duration);
+  } catch (err) {
+    console.warn('Refuel GIF missing or error showing it:', err);
+  }
+}
+
+function refuelHandler() {
+  console.log('Refuel clicked — engineOn:', VehicleModule.isEngineOn(), 'fuel:', fuel);
+  if (VehicleModule.isEngineOn()) {
+    const msg = '⛽ Please stop the engine before refueling!';
+    eventBus.emit('update', msg);
+    addNotification('Tried to refuel while engine running');
+    return;
+  }
+
+  if (fuel >= 100) {
+    const msg = 'Tank is already full!';
+    eventBus.emit('update', msg);
+    addNotification(msg);
+    return;
+  }
+
+  const target = Math.min(100, fuel + REFUEL_AMOUNT);
+  addNotification(`Refueling started — target ${target}%`);
+
+  // play refuel animation (if available)
+  playRefuelGif( (Math.ceil((target - fuel) / REFILL_STEP) * REFILL_INTERVAL) + 500 );
+
+  // gradual refill so user sees the fuel percent change
+  const refillIntervalId = setInterval(() => {
+    if (fuel >= target) {
+      clearInterval(refillIntervalId);
+      const doneMsg = `⛽ Refuel complete — Tank at ${fuel}%`;
+      eventBus.emit('update', doneMsg);
+      addNotification(doneMsg);
+      eventBus.emit('statsUpdate');
+      return;
+    }
+    fuel = Math.min(100, fuel + REFILL_STEP);
+    eventBus.emit('statsUpdate');
+  }, REFILL_INTERVAL);
+}
+
+// wire using registerEvent if available, otherwise direct listener
+if (typeof registerEvent === 'function') {
+  try {
+    registerEvent('btnRefuel', refuelHandler);
+  } catch (err) {
+    // fallback if registerEvent failed
+    if (btnRefuelEl) btnRefuelEl.addEventListener('click', refuelHandler);
+  }
+} else {
+  if (btnRefuelEl) btnRefuelEl.addEventListener('click', refuelHandler);
+}
+
 
