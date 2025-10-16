@@ -1,3 +1,4 @@
+// === IMPORT MODULES ===
 import { registerEvent } from './eventModule.js';
 import { increaseSpeed, decreaseSpeed } from './compositionModule.js';
 import { VehicleModule } from './patternModule.js';
@@ -19,20 +20,20 @@ const notifCount = document.getElementById('notifCount');
 const btnClose = document.getElementById('closeNotif');
 const btnClear = document.getElementById('clearNotif');
 
-const eventBus = new EventEmitter();
-const myCar = createVehicle('car', 'Lightning McQueen');
-
 // Stats
 const statSpeed = document.getElementById('statSpeed');
 const statFuel = document.getElementById('statFuel');
 const statTemp = document.getElementById('statTemp');
 const statOdo = document.getElementById('statOdo');
 
+// === GLOBAL VARIABLES ===
+const eventBus = new EventEmitter();
+const myCar = createVehicle('car', 'Lightning McQueen');
 let fuel = 100;
 let odometer = 0;
 let notifications = [];
 
-// === EVENT LISTENERS ===
+// === CORE EVENT UPDATERS ===
 eventBus.on('update', msg => {
   display.textContent = msg;
   addNotification(msg);
@@ -47,7 +48,7 @@ eventBus.on('statsUpdate', () => {
   statOdo.textContent = `${odometer} km`;
 });
 
-// === FUNCTIONS ===
+// === NOTIFICATION FUNCTIONS ===
 function addNotification(message) {
   const now = new Date();
   const time = now.toLocaleTimeString();
@@ -68,7 +69,9 @@ btnClear.addEventListener('click', () => {
   notifCount.textContent = '0 notifications';
 });
 
-// === BUTTON FUNCTIONS ===
+// === VEHICLE CONTROLS ===
+
+// START ENGINE
 registerEvent('btnStart', () => {
   const msg = VehicleModule.start();
   eventBus.emit('update', msg);
@@ -79,9 +82,11 @@ registerEvent('btnStart', () => {
   gifContainer.classList.add('visible');
 });
 
+// ACCELERATE
 registerEvent('btnAccelerate', () => {
   if (!VehicleModule.isEngineOn()) {
     eventBus.emit('update', '⚠️ Start the engine first!');
+    addNotification('Attempted to accelerate while engine off!');
     return;
   }
 
@@ -89,20 +94,25 @@ registerEvent('btnAccelerate', () => {
   VehicleModule.setSpeed(newSpeed);
   fuel = Math.max(0, fuel - 5);
   odometer += 1;
+
   eventBus.emit('update', `⚡ ${myCar.name} Speed: ${newSpeed} km/h`);
   eventBus.emit('statsUpdate');
 
   actionGif.src = 'images/accelerate.gif';
   gifContainer.classList.add('visible');
 
-  if (fuel <= 5) addNotification(`Low fuel! ${fuel}% remaining.`);
+  // Fuel warning and auto-stop
+  if (fuel <= 10 && fuel > 0) addNotification(`⚠️ Low fuel! ${fuel}% remaining.`);
   if (fuel <= 0) {
     fuel = 0;
     VehicleModule.stop();
-    eventBus.emit('update', 'Out of fuel! Engine stopped.');
+    eventBus.emit('update', '🛑 Out of fuel! Engine stopped.');
+    eventBus.emit('engineStatus', false);
+    actionGif.src = 'images/stop.gif';
   }
 });
 
+// BRAKE
 registerEvent('btnBrake', () => {
   let newSpeed = decreaseSpeed(VehicleModule.getSpeed(), 20);
   VehicleModule.setSpeed(newSpeed);
@@ -113,6 +123,7 @@ registerEvent('btnBrake', () => {
   gifContainer.classList.add('visible');
 });
 
+// STOP ENGINE
 registerEvent('btnStop', () => {
   const msg = VehicleModule.stop();
   eventBus.emit('update', msg);
@@ -121,25 +132,27 @@ registerEvent('btnStop', () => {
 
   actionGif.src = 'images/stop.gif';
   gifContainer.classList.add('visible');
+
   setTimeout(() => {
     gifContainer.classList.remove('visible');
     gifContainer.classList.add('hidden');
   }, 2500);
 });
+
+// REFUEL FEATURE
 registerEvent('btnRefuel', () => {
   if (VehicleModule.isEngineOn()) {
     eventBus.emit('update', '⛽ Please stop the engine before refueling!');
-    addNotification('Attempted to refuel while engine running!');
+    addNotification('Tried to refuel while engine running!');
     return;
   }
 
-  const previousFuel = fuel;
-  fuel = Math.min(100, fuel + 30);  // Add 30% fuel, max 100
+  const prevFuel = fuel;
+  fuel = Math.min(100, fuel + 30); // add 30%, max 100
   eventBus.emit('statsUpdate');
 
-  const added = fuel - previousFuel;
-  if (added > 0) {
-    const msg = `⛽ Refueled ${added}% — Tank at ${fuel}%`;
+  if (fuel > prevFuel) {
+    const msg = `⛽ Refueled ${fuel - prevFuel}% — Tank at ${fuel}%`;
     eventBus.emit('update', msg);
     addNotification(msg);
 
@@ -157,3 +170,5 @@ registerEvent('btnRefuel', () => {
     addNotification(msg);
   }
 });
+
+
