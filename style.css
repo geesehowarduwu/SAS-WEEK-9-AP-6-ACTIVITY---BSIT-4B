@@ -1,0 +1,247 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #ff1c00, #a80000);
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 30px;
+    background: url("images/mcqueenbg.jpg") no-repeat center center fixed;
+  background-size: cover;
+
+  background-color: #a80000;
+}
+
+h2 {
+  color: #ffcc00;
+  text-shadow: 0 0 15px #ff3300;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+
+.status-panel {
+  background: #111;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+  width: 320px;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-light {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+.status-on {
+  background: lime;
+  box-shadow: 0 0 10px lime;
+}
+.status-off {
+  background: gray;
+}
+
+#carImage {
+  width: 180px;
+  margin: 15px 0;
+  transition: transform 0.3s ease;
+}
+#carImage.running {
+  transform: scale(1.1) rotate(-2deg);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.card {
+  background: #222;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+}
+.card h4 {
+  color: #ffcc00;
+  margin: 5px 0;
+}
+
+
+.controls button {
+  background: linear-gradient(145deg, #ff3300, #b30000);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  margin: 6px;
+  padding: 10px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.controls button:hover {
+  background: linear-gradient(145deg, #ff6600, #ff3300);
+  transform: scale(1.05);
+}
+button.notify {
+  background: #ffcc00;
+  color: #111;
+}
+
+
+.dashboard-panel {
+  background: #111;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+  width: 340px;
+  text-align: center;
+}
+
+.display {
+  background: #000;
+  padding: 25px;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  color: #ffcc00;
+  box-shadow: 0 0 20px #ff3300;
+  margin-bottom: 15px;
+  min-height: 60px;
+}
+
+footer {
+  color: #ffcc00;
+  text-shadow: 0 0 10px #ff3300;
+  font-weight: bold;
+}
+
+
+.gif-container {
+  margin-top: 20px;
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.5s ease;
+}
+
+.gif-container img {
+  width: 250px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.6);
+  animation: pulse 1.5s infinite alternate;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 10px #ff6600; }
+  100% { box-shadow: 0 0 25px #ff0000; }
+}
+
+
+.notification-panel {
+  position: fixed;
+  top: 60px;
+  right: 30px;
+  width: 300px;
+  max-height: 70vh;
+  background: #111;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+   cursor: grab;  
+}
+.notification-panel.dragging {
+  opacity: 0.9;
+  cursor: grabbing;
+}
+
+.hidden { display: none; }
+
+.notif-header {
+  background: #022;
+  color: #ffcc00;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  font-weight: bold;
+  border-bottom: 2px solid #ffcc00;
+}
+.notif-header button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.notif-list {
+  flex: 1;
+  overflow-y: auto;
+  background: #222;
+  padding: 10px;
+}
+
+.notif-item {
+  background: #333;
+  color: #fff;
+  border-left: 4px solid #ffcc00;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.notif-item time {
+  display: block;
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.notif-footer {
+  background: #111;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid #ffcc00;
+  font-size: 0.85rem;
+}
+
+.clear-btn {
+  background: #ff3300;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.clear-btn:hover { background: #ff6600; }

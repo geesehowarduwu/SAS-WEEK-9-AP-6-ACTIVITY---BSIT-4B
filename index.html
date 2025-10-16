@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lightning McQueen Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="banner"></div>
+
+  <h2>⚡ Lightning McQueen Dashboard ⚡</h2>
+
+  <div class="container">
+ 
+    <section class="status-panel">
+      <div class="status-header">
+        <h3>Car Status</h3>
+        <span id="engineStatus" class="status-light status-off"></span>
+      </div>
+
+      <img src="images/lightning.png" id="carImage" alt="Lightning McQueen" />
+
+      <div class="stats">
+        <div class="card"><h4>Speed</h4><p id="statSpeed">0 km/h</p></div>
+        <div class="card"><h4>Fuel</h4><p id="statFuel">100%</p></div>
+        <div class="card"><h4>Temp</h4><p id="statTemp">90°C</p></div>
+        <div class="card"><h4>Odometer</h4><p id="statOdo">0 km</p></div>
+      </div>
+
+      <div class="controls">
+        <button id="btnStart">Start Engine</button>
+        <button id="btnAccelerate">Accelerate</button>
+        <button id="btnBrake">Brake</button>
+        <button id="btnStop">Stop Engine</button>
+        <button id="btnNotify" class="notify">🔔 Notifications</button>
+      </div>
+    </section>
+
+    
+    <section class="dashboard-panel">
+      <div class="display" id="display">Engine stopped.</div>
+      <footer>“Speed. I am speed.” — Lightning McQueen 🏁</footer>
+
+      
+      <div id="gifContainer" class="gif-container hidden">
+        <img id="actionGif" src="images/start.gif" alt="McQueen Action" />
+      </div>
+    </section>
+  </div>
+
+  
+  <div id="notificationPanel" class="notification-panel hidden">
+  <div class="notif-header">
+    <h4>🔔 Notifications</h4>
+    <button id="closeNotif">✖</button>
+  </div>
+  <div id="notifList" class="notif-list"></div>
+  <div class="notif-footer">
+    <button id="clearNotif" class="clear-btn">🗑 Clear All</button>
+    <span id="notifCount">0 notifications</span>
+  </div>
+</div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
